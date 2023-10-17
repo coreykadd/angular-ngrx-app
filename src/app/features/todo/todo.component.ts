@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TodoService } from './todo.service';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Todo } from './todo.model';
 
 @Component({
@@ -8,18 +8,19 @@ import { Todo } from './todo.model';
     templateUrl: './todo.component.html',
     styleUrls: ['./todo.component.scss']
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent {
+    todos$: Observable<Todo[]>;
+    newTodo = '';
 
-    constructor(private todoService: TodoService) { }
-
-    ngOnInit() {
-        this.getTodos();
+    constructor(private todoService: TodoService) {
+        this.todos$ = this.todoService.getTodos();
     }
 
-    getTodos() {
-        this.todoService.getTodos().subscribe((response) => {
-            console.log('todo response > ', response);
-        });
-    }
+    onNewTodoSubmit() {
+        console.log('new todo > ', this.newTodo);
 
+        this.todos$ = this.todos$.pipe(
+            map((todo) => [...todo, { id: 3, title: this.newTodo, done: false }])
+        );
+    }
 }

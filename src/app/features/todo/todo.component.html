@@ -1,1 +1,16 @@
-<p>todo works!</p>
+<div class="todo-page">
+    <h1 class="todo-header">My todo list</h1>
+
+    <form class="example-form" (ngSubmit)="onNewTodoSubmit()">
+        <mat-form-field class="example-full-width">
+            <mat-label>Enter todo</mat-label>
+            <input name="newTodo" matInput placeholder="Create a new todo" [(ngModel)]="newTodo">
+        </mat-form-field>
+    </form>
+
+    <mat-selection-list class="todo-list">
+        <mat-list-option *ngFor="let todo of todos$ | async">
+            {{todo.title}}
+        </mat-list-option>
+    </mat-selection-list>
+</div>

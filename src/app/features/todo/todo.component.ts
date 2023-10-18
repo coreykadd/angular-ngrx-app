@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TodoService } from './todo.service';
-import { Observable, map } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Todo } from './todo.model';
 
 @Component({
@@ -9,18 +9,33 @@ import { Todo } from './todo.model';
     styleUrls: ['./todo.component.scss']
 })
 export class TodoComponent {
-    todos$: Observable<Todo[]>;
+    todos$ = new BehaviorSubject<Todo[]>([]);
     newTodo = '';
 
     constructor(private todoService: TodoService) {
-        this.todos$ = this.todoService.getTodos();
+        this.todoService.getTodos().subscribe((todos: Todo[]) => {
+            this.todos$.next(todos);
+        })
     }
 
     onNewTodoSubmit() {
         console.log('new todo > ', this.newTodo);
 
-        this.todos$ = this.todos$.pipe(
-            map((todo) => [...todo, { id: 3, title: this.newTodo, done: false }])
-        );
+        const newTodo: Todo = {
+            id: this.todos$.value.length + 1,
+            title: this.newTodo,
+            done: false
+        };
+
+        this.todos$.next([...this.todos$.value, newTodo]);
+        this.newTodo = '';
+    }
+
+    onDeleteTodo(event: Event, todo: Todo,) {
+        event.stopPropagation();
+        console.log('deleting todo > ', todo);
+
+        const updatedTodo = this.todos$.value.filter((item) => item.id !== todo.id);
+        this.todos$.next(updatedTodo);
     }
 }

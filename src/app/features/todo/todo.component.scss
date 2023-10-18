@@ -9,3 +9,9 @@
 .todo-header {
     text-align: center;
 }
+
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -9,8 +9,14 @@
     </form>
 
     <mat-selection-list class="todo-list">
-        <mat-list-option *ngFor="let todo of todos$ | async">
-            {{todo.title}}
+        <mat-list-option *ngFor="let todo of (todos$ | async)">
+            <div class="list-item">
+                <span>{{todo.title}}</span>
+
+                <button mat-icon-button (click)="onDeleteTodo($event, todo)">
+                    <mat-icon color="warn">delete</mat-icon>
+                </button>
+            </div>
         </mat-list-option>
     </mat-selection-list>
 </div>

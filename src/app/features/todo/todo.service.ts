@@ -11,8 +11,8 @@ export class TodoService {
     getTodos(): Observable<Todo[]> {
         console.log('Getting todos');
         const todos = [
-            { id: 1, title: 'Start todo app', done: false },
-            { id: 2, title: 'Learn ngrx', done: false },
+            { id: '1', title: 'Start todo app', done: false },
+            { id: '2', title: 'Learn ngrx', done: false },
         ];
 
         return of(todos);

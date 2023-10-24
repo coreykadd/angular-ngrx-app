@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import { TodoService } from './todo.service';
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Todo } from './todo.model';
+import { Store } from '@ngrx/store';
+import { addTodo, removeTodo } from './store/todo.actions';
+import { selectAllTodos } from './store/todo.selectors';
+import { v4 as uuidv4 } from 'uuid';
+import { AppState } from 'src/app/stores/app.reducers';
 
 @Component({
     selector: 'app-todo',
@@ -9,25 +13,28 @@ import { Todo } from './todo.model';
     styleUrls: ['./todo.component.scss']
 })
 export class TodoComponent {
-    todos$ = new BehaviorSubject<Todo[]>([]);
+    todos$: Observable<Todo[]>;
     newTodo = '';
 
-    constructor(private todoService: TodoService) {
-        this.todoService.getTodos().subscribe((todos: Todo[]) => {
-            this.todos$.next(todos);
-        })
+    constructor(private store: Store<AppState>) {
+        this.todos$ = this.store.select(selectAllTodos);
+        this.todos$.subscribe(data => console.log('Selected todos:', data));
+    }
+
+    ngOnInit(): void {
+        // this.store.dispatch(loadTodos());
     }
 
     onNewTodoSubmit() {
         console.log('new todo > ', this.newTodo);
 
         const newTodo: Todo = {
-            id: this.todos$.value.length + 1,
+            id: uuidv4(),
             title: this.newTodo,
             done: false
         };
 
-        this.todos$.next([...this.todos$.value, newTodo]);
+        this.store.dispatch(addTodo({todo: newTodo}))
         this.newTodo = '';
     }
 
@@ -35,7 +42,6 @@ export class TodoComponent {
         event.stopPropagation();
         console.log('deleting todo > ', todo);
 
-        const updatedTodo = this.todos$.value.filter((item) => item.id !== todo.id);
-        this.todos$.next(updatedTodo);
+        this.store.dispatch(removeTodo({ id: todo.id }));
     }
 }

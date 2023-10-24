@@ -12,6 +12,9 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { todoReducer } from './features/todo/store/todo.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { TodosEffects } from './features/todo/store/todo.effects';
 
 @NgModule({
     declarations: [
@@ -21,12 +24,13 @@ import { MatIconModule } from '@angular/material/icon';
     imports: [
         BrowserModule,
         AppRoutingModule,
-        StoreModule.forRoot({}),
+        StoreModule.forRoot({ todos: todoReducer }),
         StoreDevtoolsModule.instrument({
             maxAge: 25,
             logOnly: environment.production,
             autoPause: true
         }),
+        EffectsModule.forRoot([TodosEffects]),
         BrowserAnimationsModule,
         LayoutModule,
         MatToolbarModule,

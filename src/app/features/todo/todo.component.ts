@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Todo } from './todo.model';
 import { Store } from '@ngrx/store';
-import { addTodo, removeTodo } from './store/todo.actions';
+import { addTodo, loadTodos, removeTodo } from './store/todo.actions';
 import { selectAllTodos } from './store/todo.selectors';
 import { v4 as uuidv4 } from 'uuid';
 import { AppState } from 'src/app/stores/app.reducers';
@@ -22,7 +22,7 @@ export class TodoComponent {
     }
 
     ngOnInit(): void {
-        // this.store.dispatch(loadTodos());
+        this.store.dispatch(loadTodos());
     }
 
     onNewTodoSubmit() {

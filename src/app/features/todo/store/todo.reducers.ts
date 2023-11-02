@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { Todo } from "../todo.model";
-import { addTodo, loadTodos, loadTodosFailure, loadTodosSuccess, removeTodo } from "./todo.actions";
+import { addTodo, loadTodos, loadTodosFailure, loadTodosSuccess, removeTodo, updateTodo, updateTodoFailure, updateTodoSuccess } from "./todo.actions";
 
 export interface TodoState {
     todos: Todo[];
@@ -23,6 +23,20 @@ export const todoReducer = createReducer(
     on(removeTodo, (state, { id }) => ({
         ...state,
         todos: state.todos.filter((todo) => todo.id !== id)
+    })),
+    on(updateTodo, (state) => ({
+        ...state,
+        status: 'loading' as const
+    })),
+    on(updateTodoSuccess, (state, { todo }) => ({
+        ...state,
+        status: 'success' as const,
+        todos: state.todos.map((item) => item.id === todo.id ? todo : item)
+    })),
+    on(updateTodoFailure, (state, { error }) => ({
+        ...state,
+        status: 'error' as const,
+        error
     })),
     on(loadTodos, (state) => ({
         ...state,

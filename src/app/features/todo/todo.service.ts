@@ -11,18 +11,38 @@ export class TodoService {
     constructor() { }
 
     getTodos(): Observable<Todo[]> {
-        console.log('Getting todos');
+        const localTodos = localStorage.getItem('todoList');
 
-        const todos = [
-            { id: '1', title: 'Start todo app', done: false },
-            { id: '2', title: 'Learn ngrx', done: false },
-        ];
+        let todos = [];
+
+        if (localTodos) {
+            todos = JSON.parse(localTodos);
+        } else {
+            todos = [
+                { id: '1', title: 'Start todo app', done: true },
+                { id: '2', title: 'Learn ngrx', done: false }
+            ];
+        }
 
         return of(todos);
     }
 
+    updateTodo(todo: Todo): Observable<Todo> {
+        const localTodos = JSON.parse(localStorage.getItem('todoList') as string);
+
+        const todoToUpdate: Todo = localTodos.find((item: Todo) => item.id === todo.id);
+
+        if (todoToUpdate) {
+            todoToUpdate.done = todo.done
+        }
+
+        localStorage.setItem('todoList', JSON.stringify(localTodos));
+
+        return of(todoToUpdate);
+    }
+
     saveTodos(todos: Todo[]): Observable<any> {
-        // TODO: save todos in storage
+        localStorage.setItem('todoList', JSON.stringify(todos));
         return of({});
     }
 }

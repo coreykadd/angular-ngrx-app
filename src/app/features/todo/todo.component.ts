@@ -19,7 +19,6 @@ export class TodoComponent {
 
     constructor(private store: Store<AppState>) {
         this.todos$ = this.store.select(selectAllTodos);
-        this.todos$.subscribe(data => console.log('Selected todos:', data));
     }
 
     ngOnInit(): void {
